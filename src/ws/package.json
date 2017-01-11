@@ -1,0 +1,9 @@
+{
+  "name": "Ws",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./Ws.js",
+  "dependencies": {
+    "bluebird": "latest"
+  }
+}
