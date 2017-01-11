@@ -3,8 +3,9 @@ import {connect} from 'react-redux'
 import * as Ons from 'react-onsenui'
 import Login from '../components/Login'
 import List from '../components/List'
+import Toolbar from '../components/Toolbar'
 import * as actions from '../actions'
-import Ws from '../ws'
+import ws from '../ws'
 
 const App = (props) => {
 
@@ -16,30 +17,20 @@ const App = (props) => {
                 </Ons.Toolbar>
             }
             renderBottomToolbar={() =>
-                <Ons.BottomToolbar>
-                    <section style={{textAlign: 'center'}}>
-                        {props.list.filter((user) => user == props.user).length == 0 ?
-                            <Ons.Button modifier='quiet large' onClick={() => Ws.send(actions.todo(props.user))}>
-                                预约
-                            </Ons.Button> :
-                            <Ons.Button modifier='quiet large' onClick={() => Ws.send(actions.done(props.user))}>
-                                {props.list[0] == props.user ? '完成' : '取消'}
-                            </Ons.Button>
-                        }
-                    </section>
-                </Ons.BottomToolbar>
+                <Toolbar user={props.user}
+                         showTodo={props.list.indexOf(props.user) == -1}
+                         showDone={props.list[0] == props.user}
+                         handleTodo={() => ws.send(actions.todo(props.user))}
+                         handleDone={() => ws.send(actions.done(props.user))}
+                />
             }>
+
             <Login
                 user={props.user}
-                onLogin={(user) => {
-                    Ws.send(actions.login(user))
-                    props.login(user)
-                }}
-                onLogout={(user) => {
-                    Ws.send(actions.logout(user))
-                    props.logout(user)
-                }}
+                onLogin={props.login}
+                onLogout={props.logout}
             />
+
             <List list={props.list}/>
         </Ons.Page>
     )

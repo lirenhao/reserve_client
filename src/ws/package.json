@@ -2,7 +2,7 @@
   "name": "Ws",
   "version": "0.0.1",
   "private": true,
-  "main": "./Ws.js",
+  "main": "./MyWebScoket.js",
   "dependencies": {
     "bluebird": "latest"
   }

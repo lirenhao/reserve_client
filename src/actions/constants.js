@@ -1,6 +1,6 @@
 export const LOGIN = 'LOGIN'
 
-export const LIST = 'LIST'
+export const INIT = 'INIT'
 
 export const TODO = 'TODO'
 

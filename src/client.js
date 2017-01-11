@@ -1,14 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {createStore} from 'redux'
-import {Provider} from "react-redux"
+import {createStore, applyMiddleware} from 'redux'
+import {Provider} from 'react-redux'
+import createSagaMiddleware from 'redux-saga'
 import reducers from './reducers'
+import sagas from './sagas'
 import App from './containers/App'
-import Ws from './ws'
+import ws from './ws'
 import '../node_modules/onsenui/css/onsenui.css'
 import '../node_modules/onsenui/css/onsen-css-components.css'
 
-const store = createStore(reducers)
+const sagaMiddleware = createSagaMiddleware()
+const store = createStore(reducers, applyMiddleware(sagaMiddleware))
+sagaMiddleware.run(sagas)
 
 const container = document.createElement('div')
 document.body.appendChild(container)
@@ -33,5 +37,5 @@ if (module.hot) {
 }
 
 window.addEventListener("load", () => {
-    Ws.setMsgHandler(store.dispatch)
+    ws.setMsgHandler(store.dispatch)
 })

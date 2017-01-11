@@ -2,7 +2,7 @@ import path from 'path'
 
 export default {
     entry: {
-        bundle: './src/client.js'
+        bundle: ['babel-polyfill', './src/client.js']
     },
     output: {
         filename: '[name].js',
