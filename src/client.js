@@ -12,7 +12,7 @@ import '../node_modules/onsenui/css/onsen-css-components.css'
 
 const sagaMiddleware = createSagaMiddleware()
 const store = createStore(reducers, applyMiddleware(sagaMiddleware))
-sagaMiddleware.run(sagas)
+sagaMiddleware.run(sagas, store)
 
 const container = document.createElement('div')
 document.body.appendChild(container)

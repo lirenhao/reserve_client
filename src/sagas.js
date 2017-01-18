@@ -1,32 +1,52 @@
 import {take, race, call} from 'redux-saga/effects'
-import {LOGIN, LOGOUT} from './actions/constants'
-import ws from './ws'
+import {LOGIN, TODO, DONE, LOGOUT} from './actions/constants'
 
-export function * loginFlow() {
+function createWebSocket(url, callback) {
+    return new Promise((resolve, reject) => {
+        try {
+            const ws = new WebSocket(url)
+            ws.onopen = () => {
+                resolve(ws)
+            }
+            ws.onmessage = (event) => {
+                callback(JSON.parse(event.data))
+            }
+            ws.onclose = () => {
+                console.log("close")
+            }
+            ws.onerror = (err) => {
+                reject(err)
+            }
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+function * sendTask(ws) {
     while (true) {
-        let login = yield take(LOGIN)
-        let winner = yield race({
-            auth: call([ws, ws.send], login),
+        let task = yield take((action) => [TODO, DONE].indexOf(action.type) > -1)
+        console.log(task)
+        yield call([ws, ws.send], JSON.stringify(task))
+    }
+}
+
+function* flow(dispatch) {
+    while (true) {
+        const login = yield take(LOGIN)
+        const ws = yield call(createWebSocket, 'ws://localhost:9000/ws', dispatch)
+        yield call([ws, ws.send], JSON.stringify(login))
+        const winner = yield race({
+            send: call(sendTask, ws),
             logout: take(LOGOUT)
         })
         if (winner.logout) {
-            yield call([ws, ws.send], winner.logout)
+            yield call([ws, ws.send], JSON.stringify(winner.logout))
+            yield call([ws, ws.close])
         }
     }
 }
 
-export function * logoutFlow() {
-    while (true) {
-        let logout = yield take(LOGOUT)
-        yield call([ws, ws.send], logout)
-        yield call([ws, ws.close])
-    }
-}
-
-
-export default function* sagas() {
-    yield [
-        loginFlow(),
-        logoutFlow()
-    ]
+export default function* sagas(store) {
+    yield [flow(store.dispatch)]
 }

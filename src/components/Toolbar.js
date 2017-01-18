@@ -9,7 +9,7 @@ const Toolbar = (props) => {
                 {props.showTodo ?
                     <Ons.Button modifier='quiet large' onClick={() => {
                         if (props.user)
-                            props.handleTodo()
+                            props.handleTodo(props.user)
                         else
                             ons.notification.alert('先登录')
                     }}>
@@ -17,7 +17,7 @@ const Toolbar = (props) => {
                     </Ons.Button> :
                     <Ons.Button modifier='quiet large' onClick={() => {
                         if (props.user)
-                            props.handleDone()
+                            props.handleDone(props.user)
                         else
                             ons.notification.alert('先登录')
                     }}>

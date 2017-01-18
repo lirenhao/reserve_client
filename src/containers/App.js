@@ -5,7 +5,6 @@ import Login from '../components/Login'
 import List from '../components/List'
 import Toolbar from '../components/Toolbar'
 import * as actions from '../actions'
-import ws from '../ws'
 
 const App = (props) => {
 
@@ -20,8 +19,8 @@ const App = (props) => {
                 <Toolbar user={props.user}
                          showTodo={props.list.indexOf(props.user) == -1}
                          showDone={props.list[0] == props.user}
-                         handleTodo={() => ws.send(actions.todo(props.user))}
-                         handleDone={() => ws.send(actions.done(props.user))}
+                         handleTodo={props.todo}
+                         handleDone={props.done}
                 />
             }>
 
@@ -41,4 +40,4 @@ const mapStateToProps = (state) => ({
     list: state.list
 })
 
-export default connect(mapStateToProps, {login: actions.login, logout: actions.logout})(App)
+export default connect(mapStateToProps, actions)(App)
